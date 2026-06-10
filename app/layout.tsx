@@ -22,6 +22,9 @@ export const metadata: Metadata = {
   title: "Juyoung | Web Developer",
   description:
     "Frontend developer portfolio — creative interfaces and thoughtful experiences",
+  icons: {
+    icon: "/public/images/icon.ico",
+  },
 };
 
 export default function RootLayout({
