@@ -83,12 +83,15 @@ export default function Home() {
     return () => window.removeEventListener("wheel", handleWheel);
   }, [is3DMode]);
 
+  // 모바일 3D 모드: 배경이 밝은 카드 오버레이이므로 2D 모드와 동일한 어두운 색상 사용
+  const darkNav = !is3DMode || isMobile;
+
   return (
     <div className="relative w-full h-screen overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
       {/* ── 네비게이션 ── */}
       <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-4">
         <span
-          className={`font-bold text-base tracking-tight ${is3DMode ? "text-slate-100" : "text-slate-700"}`}
+          className={`font-bold text-base tracking-tight ${darkNav ? "text-slate-700" : "text-slate-100"}`}
         >
           JUYOUNG
         </span>
@@ -99,12 +102,12 @@ export default function Home() {
                 onClick={() => handleChapterClick(c.key)}
                 className={`text-sm tracking-wide pb-1 border-b-2 transition-all duration-300 ${
                   (!is3DMode || isOpen) && chapter === c.key
-                    ? is3DMode
-                      ? "border-white font-semibold text-white"
-                      : "border-slate-700 font-semibold text-slate-800"
-                    : is3DMode
-                      ? "border-transparent text-slate-300/70 hover:text-white"
-                      : "border-transparent text-slate-400 hover:text-slate-600"
+                    ? darkNav
+                      ? "border-slate-700 font-semibold text-slate-800"
+                      : "border-white font-semibold text-white"
+                    : darkNav
+                      ? "border-transparent text-slate-600 hover:text-slate-800"
+                      : "border-transparent text-slate-300/70 hover:text-white"
                 }`}
               >
                 {c.label}
@@ -133,8 +136,8 @@ export default function Home() {
           {/* 모바일: 열린 상태일 때 콘텐츠를 큰 카드 오버레이로 표시 */}
           {isMobile && isOpen && (
             <div
-              className="absolute left-4 right-4 z-20 overflow-y-auto mt-5 pt-5 pb-5"
-              style={{ top: "60px", maxHeight: "calc(100vh - 140px)" }}
+              className="absolute left-4 right-4 z-20 overflow-y-auto"
+              style={{ top: "80px", maxHeight: "calc(100vh - 100px)" }}
             >
               <PageContent
                 chapter={chapter}
