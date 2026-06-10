@@ -19,8 +19,9 @@ const caveat = Caveat({
 });
 
 export const metadata: Metadata = {
-  title: "Juyoung | Frontend Developer",
-  description: "Frontend developer portfolio — creative interfaces and thoughtful experiences",
+  title: "Juyoung | Web Developer",
+  description:
+    "Frontend developer portfolio — creative interfaces and thoughtful experiences",
 };
 
 export default function RootLayout({
