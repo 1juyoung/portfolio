@@ -27,13 +27,19 @@ interface Props {
 }
 
 export default function PortfolioScene({ chapter, isOpen }: Props) {
-  const { camera } = useThree();
+  const { camera, size } = useThree();
   const bookGroupRef = useRef<THREE.Group>(null);
   const bookY = useRef(0);
+  const tempCamTarget = useRef(new THREE.Vector3());
 
   useFrame(() => {
-    const target = isOpen ? OPEN_CAM[chapter] : CLOSED_CAM;
-    camera.position.lerp(target, 0.04);
+    // 좁은 화면(모바일)일수록 카메라를 뒤로 당겨 책 전체가 viewport에 들어오도록 조정
+    const mobileOffset = Math.max(0, (768 - size.width) / 768) * 9;
+
+    const raw = isOpen ? OPEN_CAM[chapter] : CLOSED_CAM;
+    tempCamTarget.current.set(raw.x, raw.y, raw.z + mobileOffset);
+
+    camera.position.lerp(tempCamTarget.current, 0.04);
     camera.lookAt(LOOK_AT);
 
     const targetY = isOpen ? -0.4 : 0;
