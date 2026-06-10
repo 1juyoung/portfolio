@@ -33,6 +33,7 @@ export interface CareerItem {
   organization: string;
   description: string;
   tech?: string[];
+  tools?: string[];
 }
 
 export const careerData: CareerItem[] = [
@@ -42,7 +43,8 @@ export const careerData: CareerItem[] = [
     title: "정보융합학부 \n 부전공 : 미디어커뮤니케이션",
     organization: "광운대학교",
     description:
-      "React·Node.js 기반 웹 서비스 개발, Google Analytics를 활용한 사용자 행동 데이터 분석, D3.js·Tableau 기반 데이터 시각화, Adobe XD를 활용한 UI/UX 설계를 학습했습니다.",
+      "웹 서비스 개발, 데이터 분석, UI/UX 설계를 학습하며 사용자 중심의 디지털 서비스 구현 역량을 쌓았습니다.",
+    tools: ["Google Analytics", "Tableau", "D3.js", "Adobe XD"],
   },
   {
     type: "internship",

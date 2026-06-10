@@ -66,12 +66,18 @@ export default function FallbackPortfolio() {
                   {item.description}
                 </p>
                 {item.tech && item.tech.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5 mt-3">
+                  <div className={`flex flex-wrap gap-1.5 mt-3${item.tools?.length ? " mb-2" : ""}`}>
                     {item.tech.map((t) => (
-                      <span
-                        key={t}
-                        className="px-2 py-0.5 bg-blue-50 text-blue-600 text-xs rounded-full font-medium"
-                      >
+                      <span key={t} className="px-2 py-0.5 bg-blue-50 text-blue-600 text-xs rounded-full font-medium">
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                )}
+                {item.tools && item.tools.length > 0 && (
+                  <div className={`flex flex-wrap gap-1.5${item.tech?.length ? "" : " mt-3"}`}>
+                    {item.tools.map((t) => (
+                      <span key={t} className="px-2 py-0.5 bg-slate-100 text-slate-500 text-xs rounded-full font-medium">
                         {t}
                       </span>
                     ))}

@@ -605,19 +605,18 @@ function CareerPage() {
                 {item.description}
               </p>
               {item.tech && item.tech.length > 0 && (
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 3 }}>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 3, marginBottom: item.tools?.length ? 3 : 0 }}>
                   {item.tech.map((t) => (
-                    <span
-                      key={t}
-                      style={{
-                        fontSize: 8,
-                        fontWeight: 600,
-                        padding: "1px 6px",
-                        borderRadius: 999,
-                        background: "#eff6ff",
-                        color: "#3b82f6",
-                      }}
-                    >
+                    <span key={t} style={{ fontSize: 8, fontWeight: 600, padding: "1px 6px", borderRadius: 999, background: "#eff6ff", color: "#3b82f6" }}>
+                      {t}
+                    </span>
+                  ))}
+                </div>
+              )}
+              {item.tools && item.tools.length > 0 && (
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 3 }}>
+                  {item.tools.map((t) => (
+                    <span key={t} style={{ fontSize: 8, fontWeight: 600, padding: "1px 6px", borderRadius: 999, background: "#f1f5f9", color: "#64748b" }}>
                       {t}
                     </span>
                   ))}
