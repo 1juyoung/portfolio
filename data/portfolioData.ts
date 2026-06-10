@@ -20,6 +20,7 @@ export const aboutData = {
   intro:
     "프론트엔드 개발을 중심으로 시작해, 최근에는 백엔드까지 함께 공부하며 웹 서비스의 전체 흐름을 이해하려고 노력하고 있습니다. \n \n 사용자에게 보이는 화면뿐 아니라 데이터가 오가고 처리되는 과정까지 고려하는 웹 개발을 지향합니다. \n",
   skills: ["React", "TypeScript", "Next.js", "Vue.js"],
+  github: "https://github.com/1juyoung",
 };
 
 // ── Career ────────────────────────────────────────────────────
@@ -73,13 +74,18 @@ export interface TroubleshootingItem {
   metrics?: string[];
 }
 
+export interface ProjectLink {
+  label: string;
+  url: string;
+}
+
 export interface ProjectDetail {
   period: string;
   team: string;
   longDescription: string;
   roles: ProjectRole[];
   images: string[];
-  github?: string;
+  links?: ProjectLink[];
   troubleshooting?: TroubleshootingItem[];
 }
 
@@ -118,6 +124,11 @@ export const projectsData: ProjectItem[] = [
       images: [
         "/images/faceMeet/facemeet_home.png",
         "/images/faceMeet/facemeet_meetingroom.png",
+      ],
+      links: [
+        { label: "GitHub", url: "https://github.com/1juyoung/facemeet" },
+        { label: "리팩토링 FE", url: "https://github.com/1juyoung/facemeet-refactor-frontend" },
+        { label: "리팩토링 BE", url: "https://github.com/1juyoung/facemeet-refactor-backend" },
       ],
       troubleshooting: [
         {
@@ -159,6 +170,9 @@ export const projectsData: ProjectItem[] = [
         "/images/eatTheWeather/잇더웨더Home.png",
         "/images/eatTheWeather/잇더웨더weather.png",
         "/images/eatTheWeather/잇더웨더weather시간.png",
+      ],
+      links: [
+        { label: "GitHub", url: "https://github.com/1juyoung/Eat-The-Weather" },
       ],
       troubleshooting: [
         {
@@ -203,6 +217,9 @@ export const projectsData: ProjectItem[] = [
       images: [
         "/images/reviewong/리뷰엉-list.png",
         "/images/reviewong/리뷰엉-review.png",
+      ],
+      links: [
+        { label: "GitHub", url: "https://github.com/1juyoung/reviewong" },
       ],
       troubleshooting: [
         {
