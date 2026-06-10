@@ -42,7 +42,8 @@ export default function PortfolioScene({ chapter, isOpen }: Props) {
     camera.position.lerp(tempCamTarget.current, 0.04);
     camera.lookAt(LOOK_AT);
 
-    const targetY = isOpen ? -0.4 : 0;
+    // 모바일에서 책을 화면 하단으로 내려 오버레이 카드와 겹치지 않게
+    const targetY = isOpen ? (size.width < 768 ? -1.5 : -0.4) : 0;
     bookY.current += (targetY - bookY.current) * 0.06;
     if (bookGroupRef.current) bookGroupRef.current.position.y = bookY.current;
   });
