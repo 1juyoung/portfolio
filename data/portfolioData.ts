@@ -32,6 +32,7 @@ export interface CareerItem {
   title: string;
   organization: string;
   description: string;
+  tech?: string[];
 }
 
 export const careerData: CareerItem[] = [
@@ -50,6 +51,7 @@ export const careerData: CareerItem[] = [
     organization: "IT 교육 회사",
     description:
       "실시간 시스템 구현 (SSE 기반), \n 마이페이지 성능 최적화 (3.34s → 2.24s 개선)",
+    tech: ["Next.js", "TypeScript", "React"],
   },
   {
     type: "internship",
@@ -58,6 +60,7 @@ export const careerData: CareerItem[] = [
     organization: "리서치 회사",
     description:
       "자사 설문조사 서비스 리뉴얼에 참여해 랜딩 페이지 UI/UX를 개선하고, Lighthouse Performance를 68점에서 75점으로 개선했습니다.\n조건 처리 구조와 API 호출 흐름을 정리해 데이터 누락 이슈와 유지보수성을 개선했습니다.",
+    tech: ["Vue.js", "Nuxt"],
   },
 ];
 

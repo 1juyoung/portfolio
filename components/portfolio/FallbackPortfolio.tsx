@@ -62,9 +62,21 @@ export default function FallbackPortfolio() {
                 <p className="text-sm text-slate-500 mb-2">
                   {item.organization}
                 </p>
-                <p className="text-sm text-slate-500 leading-relaxed">
+                <p className="text-sm text-slate-500 leading-relaxed mb-0">
                   {item.description}
                 </p>
+                {item.tech && item.tech.length > 0 && (
+                  <div className="flex flex-wrap gap-1.5 mt-3">
+                    {item.tech.map((t) => (
+                      <span
+                        key={t}
+                        className="px-2 py-0.5 bg-blue-50 text-blue-600 text-xs rounded-full font-medium"
+                      >
+                        {t}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
             ))}
           </div>

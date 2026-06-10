@@ -599,11 +599,30 @@ function CareerPage() {
                   fontSize: 10,
                   color: "#94a3b8",
                   lineHeight: 1.55,
-                  margin: 0,
+                  margin: item.tech?.length ? "0 0 5px" : 0,
                 }}
               >
                 {item.description}
               </p>
+              {item.tech && item.tech.length > 0 && (
+                <div style={{ display: "flex", flexWrap: "wrap", gap: 3 }}>
+                  {item.tech.map((t) => (
+                    <span
+                      key={t}
+                      style={{
+                        fontSize: 8,
+                        fontWeight: 600,
+                        padding: "1px 6px",
+                        borderRadius: 999,
+                        background: "#eff6ff",
+                        color: "#3b82f6",
+                      }}
+                    >
+                      {t}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         );
