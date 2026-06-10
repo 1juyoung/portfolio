@@ -35,7 +35,7 @@ const SPINE_W = 0.13;
 const PG_W = HALF_W - 0.12; // 내지 너비 ≈ 1.60
 const PG_D = PAGE_D - 0.12; // 내지 깊이 ≈ 2.40
 
-const CARD_PX = 260;
+const CARD_PX = 300;
 
 // 색상
 const COVER_COLOR = "#2d5be3";
@@ -605,18 +605,48 @@ function CareerPage() {
                 {item.description}
               </p>
               {item.tech && item.tech.length > 0 && (
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 3, marginBottom: item.tools?.length ? 3 : 0 }}>
+                <div
+                  style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: 3,
+                    marginBottom: item.tools?.length ? 3 : 0,
+                  }}
+                >
                   {item.tech.map((t) => (
-                    <span key={t} style={{ fontSize: 8, fontWeight: 600, padding: "1px 6px", borderRadius: 999, background: "#eff6ff", color: "#3b82f6" }}>
+                    <span
+                      key={t}
+                      style={{
+                        fontSize: 8,
+                        fontWeight: 600,
+                        padding: "1px 6px",
+                        borderRadius: 999,
+                        background: "#eff6ff",
+                        color: "#3b82f6",
+                      }}
+                    >
                       {t}
                     </span>
                   ))}
                 </div>
               )}
               {item.tools && item.tools.length > 0 && (
-                <div style={{ display: "flex", flexWrap: "wrap", gap: 3 }}>
+                <div
+                  className="mt-1"
+                  style={{ display: "flex", flexWrap: "wrap", gap: 3 }}
+                >
                   {item.tools.map((t) => (
-                    <span key={t} style={{ fontSize: 8, fontWeight: 600, padding: "1px 6px", borderRadius: 999, background: "#f1f5f9", color: "#64748b" }}>
+                    <span
+                      key={t}
+                      style={{
+                        fontSize: 8,
+                        fontWeight: 600,
+                        padding: "1px 6px",
+                        borderRadius: 999,
+                        background: "#f1f5f9",
+                        color: "#64748b",
+                      }}
+                    >
                       {t}
                     </span>
                   ))}
