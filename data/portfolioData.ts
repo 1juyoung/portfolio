@@ -132,8 +132,14 @@ export const projectsData: ProjectItem[] = [
       ],
       links: [
         { label: "GitHub", url: "https://github.com/1juyoung/facemeet" },
-        { label: "리팩토링 FE", url: "https://github.com/1juyoung/facemeet-refactor-frontend" },
-        { label: "리팩토링 BE", url: "https://github.com/1juyoung/facemeet-refactor-backend" },
+        {
+          label: "리팩토링 FE",
+          url: "https://github.com/1juyoung/facemeet-refactor-frontend",
+        },
+        {
+          label: "리팩토링 BE",
+          url: "https://github.com/1juyoung/facemeet-refactor-backend",
+        },
       ],
       troubleshooting: [
         {
@@ -142,7 +148,11 @@ export const projectsData: ProjectItem[] = [
             "P2P 구조에서 참가자 수만큼 개별 연결을 생성하여, 사용자가 늘어날수록 네트워크 부하와 연결 안정성이 저하됐습니다. signaling 흐름이 구조화되지 않아 디버깅 비용도 높았습니다.",
           solution:
             "SFU 기반으로 전환해 모든 클라이언트가 단일 서버와만 연결하도록 리팩토링하고, 화상·채팅 로직을 컴포넌트와 커스텀 훅 단위로 분리했습니다.",
-          metrics: ["LCP 0.9s → 0.4s", "TBT 160ms → 0ms", "Performance 77 → 99점"],
+          metrics: [
+            "LCP 0.9s → 0.4s",
+            "TBT 160ms → 0ms",
+            "Performance 77 → 99점",
+          ],
         },
       ],
     },
@@ -186,7 +196,11 @@ export const projectsData: ProjectItem[] = [
             "캐싱 없이 매 요청마다 동일 좌표(lat, lon)의 날씨 API를 호출하여 Rate Limit 초과와 응답 지연이 발생했습니다. 날씨 아이콘도 img 태그로 비동기 호출해 렌더링 순서 통제가 어려웠습니다.",
           solution:
             "TanStack Query로 좌표 기준 데이터를 캐싱하고 useMemo로 반복 연산을 최소화했습니다. 날씨 아이콘은 next/image로 전환해 로딩을 최적화했습니다.",
-          metrics: ["Performance 78 → 100점", "TBT 510ms → 40ms", "JS 실행 1.8s → 0.4s"],
+          metrics: [
+            "Performance 78 → 100점",
+            "TBT 510ms → 40ms",
+            "JS 실행 1.8s → 0.4s",
+          ],
         },
       ],
     },
@@ -220,8 +234,8 @@ export const projectsData: ProjectItem[] = [
         },
       ],
       images: [
-        "/images/reviewong/리뷰엉-list.png",
-        "/images/reviewong/리뷰엉-review.png",
+        "/images/reviewong/reviewong-list.png",
+        "/images/reviewong/reviewong-review.png",
       ],
       links: [
         { label: "GitHub", url: "https://github.com/1juyoung/reviewong" },

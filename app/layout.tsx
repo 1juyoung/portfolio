@@ -23,7 +23,7 @@ export const metadata: Metadata = {
   description:
     "Frontend developer portfolio — creative interfaces and thoughtful experiences",
   icons: {
-    icon: "/public/images/icon.ico",
+    icon: "/images/icon.ico",
   },
 };
 
