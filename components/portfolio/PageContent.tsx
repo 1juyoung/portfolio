@@ -263,8 +263,10 @@ function CareerPage() {
 
 function ProjectsPage({
   onProjectClick,
+  bare = false,
 }: {
   onProjectClick: (p: ProjectItem) => void;
+  bare?: boolean;
 }) {
   return (
     <>
@@ -275,20 +277,20 @@ function ProjectsPage({
           key={p.id}
           onClick={() => onProjectClick(p)}
           style={{
-            borderRadius: 10,
+            borderRadius: bare ? 6 : 10,
             padding: "9px 12px",
             marginBottom: 8,
-            border: "1px solid #f1f5f9",
-            background: "#fafafa",
+            border: bare ? "1px solid rgba(100,116,139,0.25)" : "1px solid #f1f5f9",
+            background: bare ? "rgba(255,255,255,0.25)" : "#fafafa",
             cursor: "pointer",
           }}
           onMouseEnter={(e) => {
-            (e.currentTarget as HTMLDivElement).style.background = "#f0f4ff";
-            (e.currentTarget as HTMLDivElement).style.borderColor = "#dde8ff";
+            (e.currentTarget as HTMLDivElement).style.background = bare ? "rgba(255,255,255,0.45)" : "#f0f4ff";
+            (e.currentTarget as HTMLDivElement).style.borderColor = bare ? "rgba(100,116,139,0.4)" : "#dde8ff";
           }}
           onMouseLeave={(e) => {
-            (e.currentTarget as HTMLDivElement).style.background = "#fafafa";
-            (e.currentTarget as HTMLDivElement).style.borderColor = "#f1f5f9";
+            (e.currentTarget as HTMLDivElement).style.background = bare ? "rgba(255,255,255,0.25)" : "#fafafa";
+            (e.currentTarget as HTMLDivElement).style.borderColor = bare ? "rgba(100,116,139,0.25)" : "#f1f5f9";
           }}
         >
           <div
@@ -336,34 +338,46 @@ function ProjectsPage({
 export function PageContent({
   chapter,
   cardStyle,
+  bare = false,
 }: {
   chapter: ChapterKey;
   cardStyle?: React.CSSProperties;
+  bare?: boolean;
 }) {
   const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(
     null
   );
 
+  const baseStyle: React.CSSProperties = bare
+    ? {
+        width: CARD_PX,
+        padding: "12px 14px",
+        fontFamily: "system-ui, -apple-system, sans-serif",
+        boxSizing: "border-box" as const,
+        background: "transparent",
+        borderRadius: 0,
+        boxShadow: "none",
+        border: "none",
+      }
+    : {
+        width: CARD_PX,
+        minHeight: 390,
+        padding: "16px 18px",
+        fontFamily: "system-ui, -apple-system, sans-serif",
+        boxSizing: "border-box" as const,
+        background: "rgba(255,255,255,0.97)",
+        borderRadius: "14px",
+        boxShadow: "0 6px 28px rgba(0,0,0,0.14)",
+        border: "1px solid rgba(226,232,240,0.8)",
+      };
+
   return (
     <>
-      <div
-        style={{
-          width: CARD_PX,
-          minHeight: 390,
-          padding: "16px 18px",
-          fontFamily: "system-ui, -apple-system, sans-serif",
-          boxSizing: "border-box" as const,
-          background: "rgba(255,255,255,0.97)",
-          borderRadius: "14px",
-          boxShadow: "0 6px 28px rgba(0,0,0,0.14)",
-          border: "1px solid rgba(226,232,240,0.8)",
-          ...cardStyle,
-        }}
-      >
+      <div style={{ ...baseStyle, ...cardStyle }}>
         {chapter === "about" && <AboutPage />}
         {chapter === "career" && <CareerPage />}
         {chapter === "projects" && (
-          <ProjectsPage onProjectClick={setSelectedProject} />
+          <ProjectsPage onProjectClick={setSelectedProject} bare={bare} />
         )}
       </div>
       {selectedProject &&

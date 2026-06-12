@@ -372,7 +372,7 @@ function AnimatedPageCard({
       scale={0}
     >
       <Html transform center scale={0.3} occlude={false} zIndexRange={[100, 0]}>
-        <PageContent chapter={chapter} />
+        <PageContent chapter={chapter} bare />
       </Html>
     </group>
   );
