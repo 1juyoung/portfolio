@@ -137,7 +137,7 @@ export default function Home() {
           {isMobile && isOpen && (
             <div
               className="absolute left-4 right-4 z-20 overflow-y-auto"
-              style={{ top: "80px", maxHeight: "calc(100vh - 100px)" }}
+              style={{ top: "96px", maxHeight: "calc(100vh - 112px)" }}
             >
               <PageContent
                 chapter={chapter}
