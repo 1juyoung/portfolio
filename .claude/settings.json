@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "deny": [
+      "Edit(data/portfolioData.ts)",
+      "Write(data/portfolioData.ts)"
+    ]
+  }
+}

@@ -124,3 +124,6 @@ npm run lint     # ESLint 검사
 
 - `three` 패키지를 `transpilePackages`에서 제거 금지
   > 제거하는 순간 `next build`가 ESM 파싱 오류로 실패한다. Three.js ESM 번들을 Next.js가 직접 처리하지 못하기 때문이다.
+
+- **`data/portfolioData.ts` 절대 수정 금지** — `.claude/settings.json`에서 Edit/Write가 차단되어 있음
+  > 이 파일에는 실제 경력·프로젝트 내용이 담겨 있다. AI가 임의로 내용을 바꾸면 사실과 다른 정보가 배포될 수 있다. 내용 수정은 반드시 본인이 직접 한다.
