@@ -10,16 +10,17 @@ import FloorLamp from "./FloorLamp";
 
 // 닫힌 상태: 세워진 책을 3/4 앵글로 보는 눈높이 카메라
 // 앞표지 + 왼쪽 척추 + 상단 두께감이 보이는 위치
-const CLOSED_CAM = new THREE.Vector3(-0.2, 0.4, 3.8);
+const CLOSED_CAM = new THREE.Vector3(-0.2, 0.6, 6.5);
 
-// 열린 상태: 책이 +0.75 로 세워져 있으므로 정면-약간위에서 봐야 카드가 보임
+// 열린 상태: scale 1.5x 로 커진 책의 왼쪽 페이지가 정면에 보이도록
+// 카메라를 약간 위에서 내려다보는 각도로 배치 (페이지 면이 잘 보임)
 const OPEN_CAM: Record<ChapterKey, THREE.Vector3> = {
-  about: new THREE.Vector3(0, 1.0, 5.2),
-  career: new THREE.Vector3(0.3, 0.8, 5.0),
-  projects: new THREE.Vector3(0, 1.2, 5.2),
+  about: new THREE.Vector3(0, 1.3, 5.0),
+  career: new THREE.Vector3(0.2, 1.1, 4.8),
+  projects: new THREE.Vector3(0, 1.3, 5.0),
 };
 
-const LOOK_AT = new THREE.Vector3(0, 0.1, 0);
+const LOOK_AT = new THREE.Vector3(0, 0.05, 0);
 
 interface Props {
   chapter: ChapterKey;
@@ -39,7 +40,7 @@ export default function PortfolioScene({ chapter, isOpen }: Props) {
     const raw = isOpen ? OPEN_CAM[chapter] : CLOSED_CAM;
     tempCamTarget.current.set(raw.x, raw.y, raw.z + mobileOffset);
 
-    camera.position.lerp(tempCamTarget.current, 0.04);
+    camera.position.lerp(tempCamTarget.current, 0.03);
     camera.lookAt(LOOK_AT);
 
     // 모바일에서 책을 화면 하단으로 내려 오버레이 카드와 겹치지 않게
@@ -50,7 +51,7 @@ export default function PortfolioScene({ chapter, isOpen }: Props) {
 
   return (
     <>
-      <ambientLight intensity={0.65} />
+      <ambientLight intensity={1.2} />
 
       {/* 위쪽 메인 조명 */}
       <directionalLight
@@ -67,23 +68,19 @@ export default function PortfolioScene({ chapter, isOpen }: Props) {
       />
 
       {/* 정면 보조 조명 — 닫힌 책 앞면이 너무 어둡지 않게 */}
-      <directionalLight position={[0, 1, 6]} intensity={0.55} color="#d8e8ff" />
+      <directionalLight position={[0, 1, 6]} intensity={0.6} />
 
       {/* 오른쪽 보조 조명 (닫힌 책 오른쪽 측면 조명) */}
       <directionalLight position={[4, 2, 2]} intensity={0.35} color="#fff5e8" />
 
       {/* 그림자 바닥 */}
-      <mesh
-        rotation={[-Math.PI / 2, 0, 0]}
-        position={[0, -0.6, 0]}
-        receiveShadow
-      >
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.6, 0]} receiveShadow>
         <planeGeometry args={[30, 30]} />
         <shadowMaterial transparent opacity={0.1} />
       </mesh>
 
-      {/* 책 */}
-      <group ref={bookGroupRef}>
+      {/* 책 — scale 1.5x: 페이지가 화면을 채우는 크기 */}
+      <group ref={bookGroupRef} scale={1}>
         <BookModel chapter={chapter} isOpen={isOpen} />
       </group>
 

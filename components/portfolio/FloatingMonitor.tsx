@@ -24,12 +24,12 @@ export default function FloatingMonitor({ visible }: Props) {
     if (!groupRef.current) return;
 
     const bob = Math.sin(clock.elapsedTime * 0.85) * 0.04;
-    // hidden 상태: 책 페이지 위치(-0.1)에서 scale=0으로 대기
-    const targetY = visible ? 0.7 + bob : -0.1;
+    const targetY = visible ? 1.3 + bob : -0.1;
     const targetSc = visible ? 1.0 : 0.001;
 
-    currentY.current += (targetY - currentY.current) * 0.055;
-    currentSc.current += (targetSc - currentSc.current) * 0.055;
+    const speed = visible ? 0.055 : 0.15;
+    currentY.current += (targetY - currentY.current) * speed;
+    currentSc.current += (targetSc - currentSc.current) * speed;
 
     groupRef.current.position.y = currentY.current;
     groupRef.current.scale.setScalar(currentSc.current);
@@ -45,7 +45,7 @@ export default function FloatingMonitor({ visible }: Props) {
         book.rotation.x(-0.20) + monitor.rotation.x(-0.65) ≈ -0.85 합산
         → 스크린 normal ≈ [0, 0.75, 0.66] ≈ 카메라 방향 ✓
     */
-    <group ref={groupRef} position={[0.7, 0, 0.8]} rotation={[0, -0.4, 0]}>
+    <group ref={groupRef} position={[1.1, 0, 0.5]} rotation={[0, -0.4, 0]}>
       {/* 모니터 하우징 */}
       <mesh castShadow>
         <boxGeometry args={[SW, SH, SD]} />

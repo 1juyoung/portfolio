@@ -87,7 +87,7 @@ export default function Home() {
   const darkNav = !is3DMode || isMobile;
 
   return (
-    <div className="relative w-full h-screen overflow-hidden bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50">
+    <div className="relative w-full h-screen overflow-hidden" style={{ background: "radial-gradient(120% 120% at 50% 0%, #f4fbf7 0%, #e7f3eb 45%, #dceee4 100%)" }}>
       {/* ── 네비게이션 ── */}
       <nav className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-8 py-4">
         <span

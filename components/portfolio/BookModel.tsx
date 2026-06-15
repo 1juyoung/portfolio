@@ -19,18 +19,18 @@ const CB_SW = 0.08; // 척추 너비
 // ─────────────────────────────────────────────────────────────
 // 열린 책 치수  (나비형 플랫 오픈 북)
 // ─────────────────────────────────────────────────────────────
-const HALF_W = 1.5;
-const HALF_H = 0.28;
+const HALF_W = 2;
+const HALF_H = 1;
 const PAGE_D = 2.52;
 const SPINE_W = 0.13;
 const PG_W = HALF_W - 0.12; // 내지 너비 ≈ 1.60
-const PG_D = PAGE_D - 0.12; // 내지 깊이 ≈ 2.40
+const PG_D = PAGE_D + 0.06; // 내지 깊이 ≈ 2.58
 
 // 색상
-const COVER_COLOR = "#2d5be3";
-const PAGES_COLOR = "#f9f7f1";
-const INNER_COLOR = "#eef2ff";
-const SPINE_COLOR = "#1a3db5";
+const COVER_COLOR = "#059669";
+const PAGES_COLOR = "#ffffff";
+const INNER_COLOR = "#ffffff";
+const SPINE_COLOR = "#047857";
 
 interface Props {
   chapter: ChapterKey;
@@ -102,7 +102,7 @@ function ClosedBook() {
       {/* 앞표지 상단 장식 줄 */}
       <mesh position={[0, CB_H / 2 - 0.18, CB_D / 2 - CB_CT / 2 + 0.001]}>
         <planeGeometry args={[CB_W * 0.7, 0.025]} />
-        <meshStandardMaterial color="#6b8cff" roughness={0.3} />
+        <meshStandardMaterial color="#34d399" roughness={0.3} />
       </mesh>
     </group>
   );
@@ -181,7 +181,7 @@ function OpenBook({
       rotation.x = +0.75 → 책을 앞으로 기울여 페이지 면이 카메라를 향하게 함
       (완전 눕힘 0 → 완전 세움 PI/2 사이, 약 43도 기울음)
     */
-    <group ref={groupRef} rotation={[+0.6, 0, 0]} position={[HALF_W / 2, 0, 0]}>
+    <group ref={groupRef} rotation={[+0.9, 0, 0]} position={[HALF_W / 2, 0, 0]}>
       {/* 척추 */}
       <mesh castShadow>
         <boxGeometry args={[SPINE_W, HALF_H + 0.06, PAGE_D + 0.14]} />
@@ -209,7 +209,7 @@ function OpenBook({
         {showContent && (
           <>
             <mesh position={[-HALF_W / 2, 0, 0]} castShadow>
-              <boxGeometry args={[HALF_W - 0.07, HALF_H, PAGE_D - 0.06]} />
+              <boxGeometry args={[HALF_W - 0.07, HALF_H, PG_D]} />
               <meshStandardMaterial color={PAGES_COLOR} roughness={0.92} />
             </mesh>
             <mesh
@@ -217,7 +217,7 @@ function OpenBook({
               rotation={[-Math.PI / 2, 0, 0]}
             >
               <planeGeometry args={[PG_W, PG_D]} />
-              <meshStandardMaterial color={INNER_COLOR} roughness={0.8} />
+              <meshStandardMaterial color={INNER_COLOR} roughness={0.1} emissive="#ffffff" emissiveIntensity={0.45} />
             </mesh>
           </>
         )}
@@ -240,7 +240,7 @@ function OpenBook({
         {showContent && (
           <>
             <mesh position={[HALF_W / 2, 0, 0]} castShadow>
-              <boxGeometry args={[HALF_W - 0.07, HALF_H, PAGE_D - 0.06]} />
+              <boxGeometry args={[HALF_W - 0.07, HALF_H, PG_D]} />
               <meshStandardMaterial color={PAGES_COLOR} roughness={0.92} />
             </mesh>
             <mesh
@@ -248,7 +248,7 @@ function OpenBook({
               rotation={[-Math.PI / 2, 0, 0]}
             >
               <planeGeometry args={[PG_W, PG_D]} />
-              <meshStandardMaterial color={INNER_COLOR} roughness={0.8} />
+              <meshStandardMaterial color={INNER_COLOR} roughness={0.1} emissive="#ffffff" emissiveIntensity={0.45} />
             </mesh>
           </>
         )}
@@ -257,8 +257,8 @@ function OpenBook({
       {/* 페이지 넘기기 메시 */}
       {showContent && (
         <group ref={turningRef} position={[0, HALF_H / 2 + 0.007, 0]}>
-          <mesh position={[HALF_W / 2 + SPINE_W / 2, 0, 0]}>
-            <boxGeometry args={[HALF_W - 0.04, 0.013, PAGE_D - 0.12]} />
+          <mesh position={[HALF_W / 2, 0, 0]}>
+            <boxGeometry args={[PG_W, 0.013, PG_D]} />
             <meshStandardMaterial
               color="#ffffff"
               roughness={0.72}
@@ -280,7 +280,7 @@ function OpenBook({
                 → world [0, ~0.20, ~0.98] ≈ 카메라 방향 ✓
         텍스트 방향: Html up(+Y) → world [0, ~0.98, -0.20] ≈ 거의 +Y(위) ✓ (가독성 확보)
       */}
-      <AnimatedPageCard key={chapter} chapter={chapter} visible={showContent} />
+      <AnimatedPageCard key={chapter} chapter={chapter} rightZRef={rightZ} />
     </group>
   );
 }
@@ -296,9 +296,9 @@ export default function BookModel({ chapter, isOpen }: Props) {
   const showOpenPrev = useRef(false);
 
   useFrame(() => {
-    openProgress.current += ((isOpen ? 1 : 0) - openProgress.current) * 0.038;
+    openProgress.current += ((isOpen ? 1 : 0) - openProgress.current) * 0.028;
 
-    const nextShow = openProgress.current > 0.35;
+    const nextShow = openProgress.current > 0.55;
     if (nextShow !== showOpenPrev.current) {
       showOpenPrev.current = nextShow;
       setShowOpenBook(nextShow);
@@ -320,60 +320,86 @@ export default function BookModel({ chapter, isOpen }: Props) {
 }
 function AnimatedPageCard({
   chapter,
-  visible,
+  rightZRef,
 }: {
   chapter: ChapterKey;
-  visible: boolean;
+  rightZRef: { current: number };
 }) {
   const { size } = useThree();
   const isMobile = size.width < 768;
+  const isSpread = chapter !== "about";
 
-  const groupRef = useRef<THREE.Group>(null);
+  const leftGroupRef = useRef<THREE.Group>(null);
+  const rightWrapRef = useRef<THREE.Group>(null);
+  const leftDivRef = useRef<HTMLDivElement>(null);
+  const rightDivRef = useRef<HTMLDivElement>(null);
+  // 챕터 전환 시(책이 이미 열린 상태) 마운트 직후 페이드 인
+  const mountFrames = useRef(0);
 
-  const currentY = useRef(HALF_H / 2 - 0.22);
-  const currentZ = useRef(-0.95);
-  const currentScale = useRef(0);
-  const currentRotX = useRef(-1.05);
+  const Y = HALF_H / 2 + 0.02;
 
-  useFrame(({ clock }) => {
-    if (!groupRef.current) return;
+  useFrame(() => {
+    mountFrames.current = Math.min(mountFrames.current + 1, 20);
+    const mountFade = mountFrames.current / 20;
 
-    const bob = Math.sin(clock.elapsedTime * 0.9) * 0.012;
-    const targetX = chapter === "projects" ? -HALF_W / 2 : HALF_W / 8;
-    // 모바일에선 카드를 숨김 (내용은 오버레이로 표시)
-    const effectiveVisible = visible && !isMobile;
-    const targetY = effectiveVisible ? HALF_H / 2 + 0.07 + bob : HALF_H / 2 - 0.22;
-    const targetZ = effectiveVisible ? -1 : -0.95;
-    const targetScale = effectiveVisible ? 1.1 : 0;
-    const targetRotX = effectiveVisible ? -0.7 : -1.05;
+    if (isMobile) {
+      if (leftGroupRef.current) leftGroupRef.current.visible = false;
+      if (rightWrapRef.current) rightWrapRef.current.visible = false;
+      return;
+    }
 
-    groupRef.current.position.x +=
-      (targetX - groupRef.current.position.x) * 0.08;
-    currentY.current += (targetY - currentY.current) * 0.08;
-    currentZ.current += (targetZ - currentZ.current) * 0.08;
-    currentScale.current += (targetScale - currentScale.current) * 0.08;
-    currentRotX.current += (targetRotX - currentRotX.current) * 0.08;
+    const rz = rightZRef.current;
+    const openRatio = 1 - rz / Math.PI;
 
-    groupRef.current.position.y = currentY.current;
-    groupRef.current.position.z = currentZ.current;
-    groupRef.current.rotation.x = currentRotX.current;
-    groupRef.current.scale.setScalar(currentScale.current);
+    // 왼쪽 페이지: 오른쪽 표지가 열리면서 드러남
+    if (leftGroupRef.current) leftGroupRef.current.visible = true;
+    if (leftDivRef.current) {
+      const o = Math.min(1, Math.max(0, (openRatio - 0.55) / 0.25)) * mountFade;
+      leftDivRef.current.style.opacity = String(o);
+    }
+
+    // 오른쪽 페이지: rightHalfRef와 동일한 Z 회전 → 진짜 페이지처럼 펼쳐짐
+    if (isSpread && rightWrapRef.current) {
+      rightWrapRef.current.rotation.z = rz;
+      const faceUp = rz < Math.PI * 0.45;
+      rightWrapRef.current.visible = faceUp;
+      if (rightDivRef.current) {
+        const o = faceUp
+          ? Math.min(1, (Math.PI * 0.45 - rz) / (Math.PI * 0.15)) * mountFade
+          : 0;
+        rightDivRef.current.style.opacity = String(o);
+      }
+    }
   });
 
   return (
-    <group
-      ref={groupRef}
-      position={[
-        chapter === "projects" ? -HALF_W / 8 : HALF_W / 8,
-        HALF_H / 2 - 0.2,
-        -0.95,
-      ]}
-      rotation={[0, 0, 0]}
-      scale={0}
-    >
-      <Html transform center scale={0.3} occlude={false} zIndexRange={[100, 0]}>
-        <PageContent chapter={chapter} bare />
-      </Html>
-    </group>
+    <>
+      {/* 왼쪽 페이지: 고정 위치, 오른쪽 표지가 열리며 페이드 인 */}
+      <group
+        ref={leftGroupRef}
+        position={[-HALF_W / 2, Y, 0]}
+        rotation={[-Math.PI / 2, 0, 0]}
+        visible={false}
+      >
+        <Html transform center scale={0.3} occlude={false} zIndexRange={[100, 0]}>
+          <div ref={leftDivRef} style={{ opacity: 0 }}>
+            <PageContent chapter={chapter} bare pageHalf="left" />
+          </div>
+        </Html>
+      </group>
+
+      {/* 오른쪽 페이지: rightHalfRef와 동일한 Z 회전으로 책 페이지와 함께 펼쳐짐 */}
+      {isSpread && (
+        <group ref={rightWrapRef} rotation={[0, 0, Math.PI]} visible={false}>
+          <group position={[HALF_W / 2, Y, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+            <Html transform center scale={0.3} occlude={false} zIndexRange={[100, 0]}>
+              <div ref={rightDivRef} style={{ opacity: 0 }}>
+                <PageContent chapter={chapter} bare pageHalf="right" />
+              </div>
+            </Html>
+          </group>
+        </group>
+      )}
+    </>
   );
 }

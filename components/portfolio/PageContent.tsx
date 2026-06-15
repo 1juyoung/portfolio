@@ -12,36 +12,37 @@ import {
 } from "@/data/portfolioData";
 import ProjectDetailOverlay from "./ProjectDetailOverlay";
 
-const CARD_PX = 300;
+const CARD_PX = 260;
 
 const S = {
   label: {
     fontSize: 9,
     letterSpacing: "3px",
-    color: "#94a3b8",
+    color: "#9a93ab",
     textTransform: "uppercase" as const,
     margin: "0 0 6px",
   },
-  h2: { fontSize: 18, fontWeight: 800, color: "#1e293b", margin: "0 0 2px" },
-  sub: { fontSize: 11, color: "#64748b", margin: "0 0 10px" },
-  p: { fontSize: 11, color: "#475569", lineHeight: 1.75, margin: "0 0 10px" },
-  hr: { border: "none", borderTop: "1px solid #f1f5f9", margin: "10px 0" },
+  h2: { fontSize: 18, fontWeight: 800, color: "#211d2e", margin: "0 0 2px" },
+  sub: { fontSize: 11, color: "#5e5872", margin: "0 0 10px" },
+  p: { fontSize: 11, color: "#5e5872", lineHeight: 1.75, margin: "0 0 10px" },
+  hr: { border: "none", borderTop: "1px solid #d1ede4", margin: "10px 0" },
   chip: {
     display: "inline-block",
     padding: "2px 9px",
     borderRadius: 999,
-    background: "#f1f5f9",
-    color: "#475569",
+    background: "rgba(5,150,105,0.07)",
+    color: "#059669",
+    border: "1px solid rgba(5,150,105,0.35)",
     fontSize: 10,
-    fontWeight: 500,
+    fontWeight: 600,
     margin: "2px 3px 2px 0",
   },
 };
 
 const BADGE: Record<CareerType, { dot: string; label: string }> = {
-  education: { dot: "#10b981", label: "EDU" },
-  internship: { dot: "#f59e0b", label: "WORK" },
-  study: { dot: "#60a5fa", label: "DEV" },
+  education: { dot: "#9a93ab", label: "EDU" },
+  internship: { dot: "#9a93ab", label: "WORK" },
+  study: { dot: "#9a93ab", label: "DEV" },
 };
 
 function AboutPage() {
@@ -114,149 +115,179 @@ function AboutPage() {
   );
 }
 
-function CareerPage() {
+function CareerPage({ pageHalf }: { pageHalf?: "left" | "right" }) {
+  const renderItem = (
+    item: (typeof careerData)[number],
+    i: number,
+    isLast: boolean
+  ) => {
+    const b = BADGE[item.type];
+    return (
+      <div
+        key={i}
+        className="whitespace-pre-line"
+        style={{
+          display: "flex",
+          gap: 10,
+          marginBottom: isLast ? 0 : pageHalf ? 10 : 13,
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            flexShrink: 0,
+            width: 12,
+          }}
+        >
+          <div
+            style={{
+              width: 8,
+              height: 8,
+              borderRadius: "50%",
+              background: b.dot,
+              marginTop: 3,
+              flexShrink: 0,
+            }}
+          />
+          {!isLast && !pageHalf && (
+            <div
+              style={{
+                width: 1,
+                flex: 1,
+                background: "#e2e8f0",
+                marginTop: 3,
+              }}
+            />
+          )}
+        </div>
+        <div style={{ flex: 1, paddingBottom: isLast ? 0 : 4 }}>
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              gap: 5,
+              marginBottom: 2,
+            }}
+          >
+            <span
+              style={{
+                fontSize: 8,
+                fontWeight: 700,
+                color: "#059669",
+                letterSpacing: 1,
+              }}
+            >
+              {b.label}
+            </span>
+            <span style={{ fontSize: 9, color: "#cbd5e1" }}>·</span>
+            <span style={{ fontSize: 9, color: "#94a3b8" }}>
+              {item.period}
+            </span>
+          </div>
+          <p
+            style={{
+              fontSize: 12,
+              fontWeight: 700,
+              color: "#211d2e",
+              margin: "0 0 1px",
+            }}
+          >
+            {item.title}
+          </p>
+          <p style={{ fontSize: 10, color: "#5e5872", margin: "0 0 2px" }}>
+            {item.organization}
+          </p>
+          <p
+            style={{
+              fontSize: 10,
+              color: "#94a3b8",
+              lineHeight: 1.55,
+              margin: item.tech?.length ? "0 0 5px" : 0,
+            }}
+          >
+            {item.description}
+          </p>
+          {item.tech && item.tech.length > 0 && (
+            <div
+              style={{
+                display: "flex",
+                flexWrap: "wrap",
+                gap: 3,
+                marginBottom: item.tools?.length ? 3 : 0,
+              }}
+            >
+              {item.tech.map((t) => (
+                <span
+                  key={t}
+                  style={{
+                    fontSize: 8,
+                    fontWeight: 600,
+                    padding: "1px 6px",
+                    borderRadius: 999,
+                    background: "rgba(5,150,105,0.07)",
+                    color: "#059669",
+                    border: "1px solid rgba(5,150,105,0.35)",
+                  }}
+                >
+                  {t}
+                </span>
+              ))}
+            </div>
+          )}
+          {item.tools && item.tools.length > 0 && (
+            <div
+              className="mt-1"
+              style={{ display: "flex", flexWrap: "wrap", gap: 3 }}
+            >
+              {item.tools.map((t) => (
+                <span
+                  key={t}
+                  style={{
+                    fontSize: 8,
+                    fontWeight: 600,
+                    padding: "1px 6px",
+                    borderRadius: 999,
+                    background: "rgba(5,150,105,0.07)",
+                    color: "#059669",
+                    border: "1px solid rgba(5,150,105,0.35)",
+                  }}
+                >
+                  {t}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  };
+
+  if (pageHalf) {
+    const mid = Math.ceil(careerData.length / 2);
+    const items =
+      pageHalf === "left" ? careerData.slice(0, mid) : careerData.slice(mid);
+    return (
+      <>
+        {pageHalf === "left" && (
+          <>
+            <p style={S.label}>Career</p>
+            <hr style={S.hr} />
+          </>
+        )}
+        {items.map((item, i) => renderItem(item, i, i === items.length - 1))}
+      </>
+    );
+  }
+
   return (
     <>
       <p style={S.label}>Career</p>
       <hr style={S.hr} />
-      {careerData.map((item, i) => {
-        const b = BADGE[item.type];
-        const isLast = i === careerData.length - 1;
-        return (
-          <div
-            key={i}
-            className="whitespace-pre-line"
-            style={{ display: "flex", gap: 10, marginBottom: isLast ? 0 : 13 }}
-          >
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                flexShrink: 0,
-                width: 12,
-              }}
-            >
-              <div
-                style={{
-                  width: 8,
-                  height: 8,
-                  borderRadius: "50%",
-                  background: b.dot,
-                  marginTop: 3,
-                  flexShrink: 0,
-                }}
-              />
-              {!isLast && (
-                <div
-                  style={{
-                    width: 1,
-                    flex: 1,
-                    background: "#e2e8f0",
-                    marginTop: 3,
-                  }}
-                />
-              )}
-            </div>
-            <div style={{ flex: 1, paddingBottom: isLast ? 0 : 4 }}>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 5,
-                  marginBottom: 2,
-                }}
-              >
-                <span
-                  style={{
-                    fontSize: 8,
-                    fontWeight: 700,
-                    color: b.dot,
-                    letterSpacing: 1,
-                  }}
-                >
-                  {b.label}
-                </span>
-                <span style={{ fontSize: 9, color: "#cbd5e1" }}>·</span>
-                <span style={{ fontSize: 9, color: "#94a3b8" }}>
-                  {item.period}
-                </span>
-              </div>
-              <p
-                style={{
-                  fontSize: 12,
-                  fontWeight: 700,
-                  color: "#1e293b",
-                  margin: "0 0 1px",
-                }}
-              >
-                {item.title}
-              </p>
-              <p style={{ fontSize: 10, color: "#64748b", margin: "0 0 2px" }}>
-                {item.organization}
-              </p>
-              <p
-                style={{
-                  fontSize: 10,
-                  color: "#94a3b8",
-                  lineHeight: 1.55,
-                  margin: item.tech?.length ? "0 0 5px" : 0,
-                }}
-              >
-                {item.description}
-              </p>
-              {item.tech && item.tech.length > 0 && (
-                <div
-                  style={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    gap: 3,
-                    marginBottom: item.tools?.length ? 3 : 0,
-                  }}
-                >
-                  {item.tech.map((t) => (
-                    <span
-                      key={t}
-                      style={{
-                        fontSize: 8,
-                        fontWeight: 600,
-                        padding: "1px 6px",
-                        borderRadius: 999,
-                        background: "#eff6ff",
-                        color: "#3b82f6",
-                      }}
-                    >
-                      {t}
-                    </span>
-                  ))}
-                </div>
-              )}
-              {item.tools && item.tools.length > 0 && (
-                <div
-                  className="mt-1"
-                  style={{ display: "flex", flexWrap: "wrap", gap: 3 }}
-                >
-                  {item.tools.map((t) => (
-                    <span
-                      key={t}
-                      style={{
-                        fontSize: 8,
-                        fontWeight: 600,
-                        padding: "1px 6px",
-                        borderRadius: 999,
-                        background: "#f1f5f9",
-                        color: "#64748b",
-                      }}
-                    >
-                      {t}
-                    </span>
-                  ))}
-                </div>
-              )}
-            </div>
-          </div>
-        );
-      })}
+      {careerData.map((item, i) =>
+        renderItem(item, i, i === careerData.length - 1)
+      )}
     </>
   );
 }
@@ -264,73 +295,106 @@ function CareerPage() {
 function ProjectsPage({
   onProjectClick,
   bare = false,
+  pageHalf,
 }: {
   onProjectClick: (p: ProjectItem) => void;
   bare?: boolean;
+  pageHalf?: "left" | "right";
 }) {
+  const renderCard = (p: ProjectItem) => (
+    <div
+      key={p.id}
+      onClick={() => onProjectClick(p)}
+      style={{
+        borderRadius: bare ? 6 : 10,
+        padding: "9px 12px",
+        marginBottom: 8,
+        border: bare
+          ? "1px solid rgba(100,116,139,0.25)"
+          : "1px solid #f1f5f9",
+        background: bare ? "rgba(255,255,255,0.25)" : "#fafafa",
+        cursor: "pointer",
+      }}
+      onMouseEnter={(e) => {
+        (e.currentTarget as HTMLDivElement).style.background = bare
+          ? "rgba(255,255,255,0.45)"
+          : "rgba(109,60,224,0.05)";
+        (e.currentTarget as HTMLDivElement).style.borderColor = bare
+          ? "rgba(100,116,139,0.4)"
+          : "rgba(5,150,105,0.2)";
+      }}
+      onMouseLeave={(e) => {
+        (e.currentTarget as HTMLDivElement).style.background = bare
+          ? "rgba(255,255,255,0.25)"
+          : "#fafafa";
+        (e.currentTarget as HTMLDivElement).style.borderColor = bare
+          ? "rgba(100,116,139,0.25)"
+          : "#f1f5f9";
+      }}
+    >
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}
+      >
+        <p
+          style={{
+            fontSize: 13,
+            fontWeight: 700,
+            color: "#211d2e",
+            margin: "0 0 3px",
+          }}
+        >
+          {p.title}
+        </p>
+        <span style={{ fontSize: 12, color: "#9a93ab" }}>›</span>
+      </div>
+      <p
+        style={{
+          fontSize: 10,
+          color: "#5e5872",
+          margin: "0 0 6px",
+          lineHeight: 1.6,
+        }}
+      >
+        {p.description}
+      </p>
+      <div>
+        {p.tech.map((t) => (
+          <span key={t} style={S.chip}>
+            {t}
+          </span>
+        ))}
+      </div>
+    </div>
+  );
+
+  if (pageHalf) {
+    const mid = Math.ceil(projectsData.length / 2);
+    const projects =
+      pageHalf === "left"
+        ? projectsData.slice(0, mid)
+        : projectsData.slice(mid);
+    return (
+      <>
+        {pageHalf === "left" && (
+          <>
+            <p style={S.label}>Projects</p>
+            <hr style={S.hr} />
+          </>
+        )}
+        {projects.map(renderCard)}
+      </>
+    );
+  }
+
   return (
     <>
       <p style={S.label}>Projects</p>
       <hr style={S.hr} />
-      {projectsData.map((p) => (
-        <div
-          key={p.id}
-          onClick={() => onProjectClick(p)}
-          style={{
-            borderRadius: bare ? 6 : 10,
-            padding: "9px 12px",
-            marginBottom: 8,
-            border: bare ? "1px solid rgba(100,116,139,0.25)" : "1px solid #f1f5f9",
-            background: bare ? "rgba(255,255,255,0.25)" : "#fafafa",
-            cursor: "pointer",
-          }}
-          onMouseEnter={(e) => {
-            (e.currentTarget as HTMLDivElement).style.background = bare ? "rgba(255,255,255,0.45)" : "#f0f4ff";
-            (e.currentTarget as HTMLDivElement).style.borderColor = bare ? "rgba(100,116,139,0.4)" : "#dde8ff";
-          }}
-          onMouseLeave={(e) => {
-            (e.currentTarget as HTMLDivElement).style.background = bare ? "rgba(255,255,255,0.25)" : "#fafafa";
-            (e.currentTarget as HTMLDivElement).style.borderColor = bare ? "rgba(100,116,139,0.25)" : "#f1f5f9";
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <p
-              style={{
-                fontSize: 13,
-                fontWeight: 700,
-                color: "#1e293b",
-                margin: "0 0 3px",
-              }}
-            >
-              {p.title}
-            </p>
-            <span style={{ fontSize: 12, color: "#94a3b8" }}>›</span>
-          </div>
-          <p
-            style={{
-              fontSize: 10,
-              color: "#64748b",
-              margin: "0 0 6px",
-              lineHeight: 1.6,
-            }}
-          >
-            {p.description}
-          </p>
-          <div>
-            {p.tech.map((t) => (
-              <span key={t} style={S.chip}>
-                {t}
-              </span>
-            ))}
-          </div>
-        </div>
-      ))}
+      {projectsData.map(renderCard)}
     </>
   );
 }
@@ -339,10 +403,12 @@ export function PageContent({
   chapter,
   cardStyle,
   bare = false,
+  pageHalf,
 }: {
   chapter: ChapterKey;
   cardStyle?: React.CSSProperties;
   bare?: boolean;
+  pageHalf?: "left" | "right";
 }) {
   const [selectedProject, setSelectedProject] = useState<ProjectItem | null>(
     null
@@ -375,9 +441,13 @@ export function PageContent({
     <>
       <div style={{ ...baseStyle, ...cardStyle }}>
         {chapter === "about" && <AboutPage />}
-        {chapter === "career" && <CareerPage />}
+        {chapter === "career" && <CareerPage pageHalf={pageHalf} />}
         {chapter === "projects" && (
-          <ProjectsPage onProjectClick={setSelectedProject} bare={bare} />
+          <ProjectsPage
+            onProjectClick={setSelectedProject}
+            bare={bare}
+            pageHalf={pageHalf}
+          />
         )}
       </div>
       {selectedProject &&
