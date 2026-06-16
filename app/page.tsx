@@ -53,15 +53,11 @@ export default function Home() {
   }, [isOpen]);
 
   const handleChapterClick = (key: ChapterKey) => {
-    if (!introComplete) {
-      if (isMobile && is3DMode) {
-        // 모바일: 인트로 스킵하고 바로 챕터 진입
-        scrollTargetRef.current = 1.0;
-        setIntroComplete(true);
-        openBook();
-      } else {
-        return;
-      }
+    if (!introComplete && is3DMode) {
+      // 인트로 전 네비 클릭: 인트로 스킵하고 바로 챕터 진입 (데스크탑·모바일 공통)
+      scrollTargetRef.current = 1.0;
+      setIntroComplete(true);
+      openBook();
     }
     setChapter(key);
     if (!is3DMode) {

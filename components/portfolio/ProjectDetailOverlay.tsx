@@ -1,38 +1,27 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
-import type { ProjectItem, TroubleshootingItem, ProjectLink } from "@/data/portfolioData";
+import { useEffect, useCallback } from "react";
+import type {
+  ProjectItem,
+  TroubleshootingItem,
+  ProjectLink,
+} from "@/data/portfolioData";
 
 interface Props {
   project: ProjectItem;
   onClose: () => void;
 }
 
-type Tab = "roles" | "troubleshooting";
-
 export default function ProjectDetailOverlay({ project, onClose }: Props) {
-  const [mounted, setMounted] = useState(false);
-  const [activeTab, setActiveTab] = useState<Tab>("roles");
-  const [tabKey, setTabKey] = useState(0);
-
   const images = project.detail?.images ?? [];
   const hasRoles = (project.detail?.roles?.length ?? 0) > 0;
   const hasTroubleshooting = (project.detail?.troubleshooting?.length ?? 0) > 0;
-  const showTabs = hasRoles && hasTroubleshooting;
 
   const handleClose = useCallback(() => {
-    setMounted(false);
-    setTimeout(onClose, 420);
+    onClose();
   }, [onClose]);
 
-  const switchTab = (tab: Tab) => {
-    if (tab === activeTab) return;
-    setActiveTab(tab);
-    setTabKey((k) => k + 1);
-  };
-
   useEffect(() => {
-    const raf = requestAnimationFrame(() => setMounted(true));
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
 
@@ -42,7 +31,6 @@ export default function ProjectDetailOverlay({ project, onClose }: Props) {
     window.addEventListener("keydown", handleKey);
 
     return () => {
-      cancelAnimationFrame(raf);
       document.body.style.overflow = prev;
       window.removeEventListener("keydown", handleKey);
     };
@@ -52,35 +40,31 @@ export default function ProjectDetailOverlay({ project, onClose }: Props) {
     <div
       onClick={handleClose}
       onWheel={(e) => e.stopPropagation()}
+      onTouchMove={(e) => e.stopPropagation()}
       style={{
         position: "fixed",
         inset: 0,
         zIndex: 99999,
         display: "flex",
-        alignItems: "center",
+        alignItems: "flex-end",
         justifyContent: "center",
-        background: `rgba(15, 23, 42, ${mounted ? 0.78 : 0})`,
-        backdropFilter: mounted ? "blur(8px)" : "blur(0px)",
-        WebkitBackdropFilter: mounted ? "blur(8px)" : "blur(0px)",
-        transition: "background 0.4s ease, backdrop-filter 0.4s ease",
-        cursor: "pointer",
+        background: "rgba(15,23,42,0.6)",
+        backdropFilter: "blur(6px)",
+        WebkitBackdropFilter: "blur(6px)",
       }}
     >
       <div
         onClick={(e) => e.stopPropagation()}
         style={{
-          width: "calc(100% - 40px)",
-          maxWidth: 760,
-          maxHeight: "90vh",
+          width: "100%",
+          maxWidth: 720,
+          maxHeight: "88vh",
           background: "#ffffff",
-          borderRadius: 24,
+          borderRadius: "20px 20px 0 0",
           display: "flex",
           flexDirection: "column",
           overflow: "hidden",
-          transform: `translateY(${mounted ? 0 : "100%"})`,
-          transition: "transform 0.45s cubic-bezier(0.32, 0.72, 0, 1)",
           cursor: "default",
-          boxShadow: "0 -8px 40px rgba(0,0,0,0.2)",
         }}
       >
         {/* 드래그 핸들 */}
@@ -88,25 +72,29 @@ export default function ProjectDetailOverlay({ project, onClose }: Props) {
           style={{
             display: "flex",
             justifyContent: "center",
-            padding: "14px 0 0",
+            padding: "12px 0 0",
             flexShrink: 0,
           }}
         >
           <div
-            style={{ width: 36, height: 4, borderRadius: 2, background: "#e2e8f0" }}
+            style={{
+              width: 32,
+              height: 4,
+              borderRadius: 2,
+              background: "#e2e8f0",
+            }}
           />
         </div>
 
-        {/* 스크롤 가능한 본문 */}
-        <div style={{ flex: 1, overflowY: "auto", padding: "16px 28px 40px" }}>
-
-          {/* 이름 + X */}
+        {/* 스크롤 영역 */}
+        <div style={{ flex: 1, overflowY: "auto", padding: "16px 24px 48px" }}>
+          {/* 헤더 */}
           <div
             style={{
               display: "flex",
               justifyContent: "space-between",
               alignItems: "flex-start",
-              marginBottom: 10,
+              marginBottom: 8,
             }}
           >
             <h2
@@ -116,7 +104,7 @@ export default function ProjectDetailOverlay({ project, onClose }: Props) {
                 color: "#0f172a",
                 margin: 0,
                 letterSpacing: -0.5,
-                fontFamily: "system-ui, -apple-system, sans-serif",
+                fontFamily: "system-ui,-apple-system,sans-serif",
               }}
             >
               {project.title}
@@ -124,14 +112,13 @@ export default function ProjectDetailOverlay({ project, onClose }: Props) {
             <button
               onClick={handleClose}
               style={{
-                width: 34,
-                height: 34,
+                width: 32,
+                height: 32,
                 borderRadius: "50%",
                 background: "#f1f5f9",
                 border: "none",
                 color: "#64748b",
-                fontSize: 20,
-                lineHeight: 1,
+                fontSize: 18,
                 cursor: "pointer",
                 display: "flex",
                 alignItems: "center",
@@ -144,9 +131,14 @@ export default function ProjectDetailOverlay({ project, onClose }: Props) {
             </button>
           </div>
 
-          {/* 기간 + 인원 */}
+          {/* 기간 · 인원 */}
           <div
-            style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 16 }}
+            style={{
+              display: "flex",
+              gap: 6,
+              flexWrap: "wrap",
+              marginBottom: 14,
+            }}
           >
             {project.detail?.period && <Chip>{project.detail.period}</Chip>}
             {project.detail?.team && <Chip>{project.detail.team}</Chip>}
@@ -158,28 +150,28 @@ export default function ProjectDetailOverlay({ project, onClose }: Props) {
               fontSize: 14,
               color: "#475569",
               lineHeight: 1.8,
-              margin: "0 0 24px",
-              fontFamily: "system-ui, -apple-system, sans-serif",
+              margin: "0 0 22px",
+              fontFamily: "system-ui,-apple-system,sans-serif",
             }}
           >
             {project.detail?.longDescription ?? project.description}
           </p>
 
-          {/* 이미지 그리드 */}
+          {/* 이미지 */}
           {images.length > 0 && (
             <div
               style={{
-                background: "#F4F8FF",
-                borderRadius: 16,
-                padding: "20px 16px",
-                marginBottom: 24,
+                background: "#f8fafc",
+                borderRadius: 14,
+                padding: "16px 12px",
+                marginBottom: 22,
               }}
             >
               <div
                 style={{
                   display: "grid",
                   gridTemplateColumns: `repeat(${images.length}, 1fr)`,
-                  gap: 12,
+                  gap: 10,
                 }}
               >
                 {images.map((src, i) => (
@@ -192,8 +184,8 @@ export default function ProjectDetailOverlay({ project, onClose }: Props) {
                       width: "100%",
                       height: "auto",
                       objectFit: "contain",
-                      borderRadius: 10,
-                      boxShadow: "0 4px 18px rgba(0,0,0,0.13)",
+                      borderRadius: 8,
+                      boxShadow: "0 2px 12px rgba(0,0,0,0.1)",
                       display: "block",
                     }}
                   />
@@ -202,109 +194,84 @@ export default function ProjectDetailOverlay({ project, onClose }: Props) {
             </div>
           )}
 
-          {/* 탭 */}
-          {showTabs && (
-            <div
-              style={{
-                display: "flex",
-                background: "#f1f5f9",
-                borderRadius: 10,
-                padding: 3,
-                marginBottom: 16,
-                gap: 2,
-              }}
-            >
-              {(["roles", "troubleshooting"] as Tab[]).map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => switchTab(tab)}
-                  style={{
-                    flex: 1,
-                    padding: "8px 0",
-                    borderRadius: 8,
-                    border: "none",
-                    background: activeTab === tab ? "#fff" : "transparent",
-                    boxShadow:
-                      activeTab === tab
-                        ? "0 1px 3px rgba(0,0,0,0.1)"
-                        : "none",
-                    color: activeTab === tab ? "#1e293b" : "#94a3b8",
-                    fontWeight: activeTab === tab ? 600 : 400,
-                    fontSize: 12,
-                    cursor: "pointer",
-                    transition: "all 0.2s ease",
-                    fontFamily: "system-ui, -apple-system, sans-serif",
-                  }}
-                >
-                  {tab === "roles" ? "담당 역할" : "트러블슈팅"}
-                </button>
-              ))}
+          {/* 담당 역할 */}
+          {hasRoles && (
+            <div style={{ marginBottom: hasTroubleshooting ? 24 : 20 }}>
+              <SectionLabel>담당 역할</SectionLabel>
+              <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                {project.detail!.roles.map((role, i) => (
+                  <div
+                    key={i}
+                    style={{
+                      display: "flex",
+                      gap: 10,
+                      alignItems: "flex-start",
+                    }}
+                  >
+                    <span
+                      style={{
+                        marginTop: 5,
+                        width: 5,
+                        height: 5,
+                        borderRadius: "50%",
+                        background: "#059669",
+                        flexShrink: 0,
+                      }}
+                    />
+                    <div>
+                      <p
+                        style={{
+                          fontSize: 13,
+                          fontWeight: 700,
+                          color: "#1e293b",
+                          margin: "0 0 2px",
+                          fontFamily: "system-ui,-apple-system,sans-serif",
+                        }}
+                      >
+                        {role.title}
+                      </p>
+                      <p
+                        style={{
+                          fontSize: 12,
+                          color: "#64748b",
+                          margin: 0,
+                          lineHeight: 1.65,
+                          fontFamily: "system-ui,-apple-system,sans-serif",
+                        }}
+                      >
+                        {role.description}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 
-          {/* 탭 콘텐츠 */}
-          <div key={tabKey} className="tab-content-enter" style={{ marginBottom: 20 }}>
-            {/* 담당 역할 */}
-            {(!showTabs || activeTab === "roles") &&
-              hasRoles && (
-                <>
-                  {!showTabs && <SectionLabel>담당 역할</SectionLabel>}
-                  <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-                    {project.detail!.roles.map((role, i) => (
-                      <div
-                        key={i}
-                        style={{
-                          padding: "11px 14px",
-                          borderRadius: 12,
-                          background: "#f8fafc",
-                          border: "1px solid #f1f5f9",
-                        }}
-                      >
-                        <p
-                          style={{
-                            fontSize: 12,
-                            fontWeight: 700,
-                            color: "#1e293b",
-                            margin: "0 0 4px",
-                            fontFamily: "system-ui, -apple-system, sans-serif",
-                          }}
-                        >
-                          {role.title}
-                        </p>
-                        <p
-                          style={{
-                            fontSize: 11,
-                            color: "#64748b",
-                            margin: 0,
-                            lineHeight: 1.65,
-                            fontFamily: "system-ui, -apple-system, sans-serif",
-                          }}
-                        >
-                          {role.description}
-                        </p>
-                      </div>
-                    ))}
-                  </div>
-                </>
-              )}
-
-            {/* 트러블슈팅 */}
-            {(!showTabs || activeTab === "troubleshooting") &&
-              hasTroubleshooting && (
-                <>
-                  {!showTabs && <SectionLabel>트러블슈팅</SectionLabel>}
-                  <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-                    {project.detail!.troubleshooting!.map((item, i) => (
-                      <TroubleshootingCard key={i} item={item} index={i} />
-                    ))}
-                  </div>
-                </>
-              )}
-          </div>
+          {/* 트러블슈팅 — 담당 역할 아래 직접 배치 */}
+          {hasTroubleshooting && (
+            <div style={{ marginBottom: 22 }}>
+              <SectionLabel>문제 해결</SectionLabel>
+              <div
+                style={{ display: "flex", flexDirection: "column", gap: 20 }}
+              >
+                {project.detail!.troubleshooting!.map((item, i) => (
+                  <TroubleshootingEntry
+                    key={i}
+                    item={item}
+                    index={i}
+                    isLast={i === project.detail!.troubleshooting!.length - 1}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
 
           {/* 기술 스택 */}
           {project.tech.length > 0 && (
-            <div style={{ marginBottom: project.detail?.links?.length ? 20 : 0 }}>
+            <div
+              style={{ marginBottom: project.detail?.links?.length ? 20 : 0 }}
+            >
               <SectionLabel>Tech Stack</SectionLabel>
               <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
                 {project.tech.map((t) => (
@@ -317,7 +284,7 @@ export default function ProjectDetailOverlay({ project, onClose }: Props) {
                       color: "#3b82f6",
                       fontSize: 11,
                       fontWeight: 600,
-                      fontFamily: "system-ui, -apple-system, sans-serif",
+                      fontFamily: "system-ui,-apple-system,sans-serif",
                     }}
                   >
                     {t}
@@ -349,19 +316,9 @@ export default function ProjectDetailOverlay({ project, onClose }: Props) {
                       fontSize: 11,
                       fontWeight: 600,
                       textDecoration: "none",
-                      fontFamily: "system-ui, -apple-system, sans-serif",
-                      transition: "background 0.15s ease",
-                    }}
-                    onMouseEnter={(e) => {
-                      (e.currentTarget as HTMLAnchorElement).style.background = "#1e293b";
-                    }}
-                    onMouseLeave={(e) => {
-                      (e.currentTarget as HTMLAnchorElement).style.background = "#0f172a";
+                      fontFamily: "system-ui,-apple-system,sans-serif",
                     }}
                   >
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z" />
-                    </svg>
                     {link.label}
                   </a>
                 ))}
@@ -374,161 +331,121 @@ export default function ProjectDetailOverlay({ project, onClose }: Props) {
   );
 }
 
-function TroubleshootingCard({
+function TroubleshootingEntry({
   item,
   index,
+  isLast,
 }: {
   item: TroubleshootingItem;
   index: number;
+  isLast: boolean;
 }) {
   return (
     <div
       style={{
-        borderRadius: 14,
-        border: "1px solid #f1f5f9",
-        overflow: "hidden",
+        paddingBottom: isLast ? 0 : 26,
+        borderBottom: isLast ? "none" : "1px solid #f1f5f9",
       }}
     >
-      {/* 헤더 */}
+      {/* 번호 + 제목 */}
       <div
         style={{
-          padding: "9px 14px",
-          background: "#f8fafc",
           display: "flex",
-          alignItems: "center",
-          gap: 8,
-          borderBottom: "1px solid #f1f5f9",
+          gap: 10,
+          alignItems: "flex-start",
+          marginBottom: 10,
         }}
       >
-        <span
+        <div
           style={{
-            width: 18,
-            height: 18,
-            borderRadius: "50%",
-            background: "#e2e8f0",
-            display: "inline-flex",
+            minWidth: 22,
+            height: 22,
+            borderRadius: 6,
+            background: "#059669",
+            display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            fontSize: 9,
-            fontWeight: 700,
-            color: "#64748b",
+            fontSize: 11,
+            fontWeight: 800,
+            color: "#fff",
             flexShrink: 0,
-            fontFamily: "system-ui, -apple-system, sans-serif",
+            marginTop: 1,
+            fontFamily: "system-ui,-apple-system,sans-serif",
           }}
         >
           {index + 1}
-        </span>
-        <span
+        </div>
+        <p
           style={{
-            fontSize: 12,
+            fontSize: 15,
             fontWeight: 700,
-            color: "#1e293b",
-            fontFamily: "system-ui, -apple-system, sans-serif",
+            color: "#0f172a",
+            margin: 0,
+            lineHeight: 1.4,
+            fontFamily: "system-ui,-apple-system,sans-serif",
           }}
         >
           {item.title}
-        </span>
+        </p>
       </div>
 
-      <div style={{ padding: "12px 14px", display: "flex", flexDirection: "column", gap: 8 }}>
-        {/* Problem */}
-        <div
+      <div style={{ paddingLeft: 32 }}>
+        {/* 문제 상황 — 흐릿하게 */}
+        <p
+          className="whitespace-pre-line"
           style={{
-            padding: "9px 12px",
-            borderRadius: 10,
-            background: "#fff5f5",
-            borderLeft: "3px solid #fca5a5",
+            fontSize: 12,
+            color: "#94a3b8",
+            margin: "0 0 10px",
+            lineHeight: 1.75,
+            fontFamily: "system-ui,-apple-system,sans-serif",
           }}
         >
-          <p
-            style={{
-              fontSize: 9,
-              fontWeight: 700,
-              color: "#ef4444",
-              margin: "0 0 5px",
-              letterSpacing: "1.5px",
-              fontFamily: "system-ui, -apple-system, sans-serif",
-            }}
-          >
-            PROBLEM
-          </p>
-          <p
-            style={{
-              fontSize: 11,
-              color: "#475569",
-              margin: 0,
-              lineHeight: 1.65,
-              fontFamily: "system-ui, -apple-system, sans-serif",
-            }}
-          >
-            {item.problem}
-          </p>
-        </div>
+          {item.problem}
+        </p>
 
-        {/* Arrow */}
+        {/* 해결 — 초록 블록으로 강조 */}
         <div
+          className="whitespace-pre-line"
           style={{
-            textAlign: "center",
-            color: "#cbd5e1",
-            fontSize: 13,
-            lineHeight: 1,
-          }}
-        >
-          ↓
-        </div>
-
-        {/* Solution */}
-        <div
-          style={{
-            padding: "9px 12px",
+            padding: "10px 14px",
             borderRadius: 10,
-            background: "#eff6ff",
-            borderLeft: "3px solid #93c5fd",
+            background: "#f0fdf4",
+            marginBottom: item.metrics?.length ? 10 : 0,
           }}
         >
           <p
+            className="whitespace-pre-line"
             style={{
-              fontSize: 9,
-              fontWeight: 700,
-              color: "#3b82f6",
-              margin: "0 0 5px",
-              letterSpacing: "1.5px",
-              fontFamily: "system-ui, -apple-system, sans-serif",
-            }}
-          >
-            SOLUTION
-          </p>
-          <p
-            style={{
-              fontSize: 11,
-              color: "#475569",
+              fontSize: 13,
+              color: "#15803d",
               margin: 0,
-              lineHeight: 1.65,
-              fontFamily: "system-ui, -apple-system, sans-serif",
+              lineHeight: 1.75,
+              fontFamily: "system-ui,-apple-system,sans-serif",
             }}
           >
             {item.solution}
           </p>
         </div>
 
-        {/* Metrics */}
+        {/* 성과 */}
         {item.metrics && item.metrics.length > 0 && (
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 5, paddingTop: 2 }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
             {item.metrics.map((m, i) => (
               <span
                 key={i}
                 style={{
                   padding: "3px 10px",
                   borderRadius: 999,
-                  background: "#f0fdf4",
-                  color: "#16a34a",
-                  fontSize: 10,
+                  background: "#fff",
+                  color: "#059669",
+                  fontSize: 11,
                   fontWeight: 600,
                   border: "1px solid #bbf7d0",
-                  fontFamily: "system-ui, -apple-system, sans-serif",
+                  fontFamily: "system-ui,-apple-system,sans-serif",
                 }}
               >
-                {m}
+                ✓ {m}
               </span>
             ))}
           </div>
@@ -547,7 +464,7 @@ function Chip({ children }: { children: React.ReactNode }) {
         background: "#f1f5f9",
         padding: "3px 10px",
         borderRadius: 999,
-        fontFamily: "system-ui, -apple-system, sans-serif",
+        fontFamily: "system-ui,-apple-system,sans-serif",
       }}
     >
       {children}
@@ -563,9 +480,9 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
         letterSpacing: "2px",
         color: "#94a3b8",
         textTransform: "uppercase",
-        margin: "0 0 10px",
+        margin: "0 0 12px",
         fontWeight: 700,
-        fontFamily: "system-ui, -apple-system, sans-serif",
+        fontFamily: "system-ui,-apple-system,sans-serif",
       }}
     >
       {children}
