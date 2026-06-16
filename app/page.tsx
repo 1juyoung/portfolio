@@ -53,7 +53,16 @@ export default function Home() {
   }, [isOpen]);
 
   const handleChapterClick = (key: ChapterKey) => {
-    if (!introComplete) return;
+    if (!introComplete) {
+      if (isMobile && is3DMode) {
+        // 모바일: 인트로 스킵하고 바로 챕터 진입
+        scrollTargetRef.current = 1.0;
+        setIntroComplete(true);
+        openBook();
+      } else {
+        return;
+      }
+    }
     setChapter(key);
     if (!is3DMode) {
       document.getElementById(key)?.scrollIntoView({ behavior: "smooth" });
@@ -116,6 +125,72 @@ export default function Home() {
     };
     window.addEventListener("wheel", handleWheel, { passive: true });
     return () => window.removeEventListener("wheel", handleWheel);
+  }, [is3DMode, introComplete, chapter]);
+
+  // 모바일 터치 스와이프 — wheel 핸들러와 동일한 진행도 제어
+  useEffect(() => {
+    if (!is3DMode) return;
+
+    let touchStartY = 0;
+
+    const handleTouchStart = (e: TouchEvent) => {
+      touchStartY = e.touches[0].clientY;
+    };
+
+    const handleTouchEnd = (e: TouchEvent) => {
+      const dy = touchStartY - e.changedTouches[0].clientY;
+
+      if (!introComplete) {
+        // 탭(|dy|<20)은 크게 전진, 스와이프는 방향·크기 반영
+        const step =
+          Math.abs(dy) < 20
+            ? 0.3
+            : Math.sign(dy) * Math.min(Math.abs(dy) / 200, 0.3);
+        scrollTargetRef.current = Math.max(
+          0,
+          Math.min(1, scrollTargetRef.current + step)
+        );
+        if (scrollTargetRef.current >= 1.0) {
+          openBook();
+          setIntroComplete(true);
+        }
+        return;
+      }
+
+      if (Math.abs(dy) < 20) return; // 탭은 챕터 이동 무시
+
+      const now = Date.now();
+      if (now - bookOpenedAt.current < 1500) return;
+      if (now - lastChapterAt.current < 800) return;
+
+      if (dy < 0) {
+        const idx = CHAPTERS.findIndex((c) => c.key === chapter);
+        if (idx > 0) {
+          lastChapterAt.current = now;
+          setChapter(CHAPTERS[idx - 1].key);
+        } else {
+          scrollTargetRef.current = Math.max(0, scrollTargetRef.current - 0.25);
+          if (scrollTargetRef.current < 1.0) {
+            setIntroComplete(false);
+          }
+        }
+        return;
+      }
+
+      lastChapterAt.current = now;
+      setChapter((prev) => {
+        const idx = CHAPTERS.findIndex((c) => c.key === prev);
+        if (idx < CHAPTERS.length - 1) return CHAPTERS[idx + 1].key;
+        return prev;
+      });
+    };
+
+    window.addEventListener("touchstart", handleTouchStart, { passive: true });
+    window.addEventListener("touchend", handleTouchEnd, { passive: true });
+    return () => {
+      window.removeEventListener("touchstart", handleTouchStart);
+      window.removeEventListener("touchend", handleTouchEnd);
+    };
   }, [is3DMode, introComplete, chapter]);
 
   const darkNav = !is3DMode || isMobile;
@@ -185,10 +260,10 @@ export default function Home() {
             </div>
           )}
 
-          {/* 인트로 전: 스크롤 안내 */}
+          {/* 인트로 전: 조작 안내 */}
           {!introComplete && (
             <p className="absolute bottom-8 left-1/2 -translate-x-1/2 z-40 text-[11px] tracking-widest text-slate-400 uppercase select-none animate-pulse">
-              scroll to begin
+              {isMobile ? "tap or swipe to begin" : "scroll to begin"}
             </p>
           )}
 
