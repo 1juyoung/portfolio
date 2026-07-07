@@ -48,7 +48,7 @@ export const careerData: CareerItem[] = [
   },
   {
     type: "internship",
-    period: "2025.06— 2024.07",
+    period: "2025.06— 2025.07",
     title: "프론트엔드 개발",
     organization: "IT 교육 회사",
     description:
